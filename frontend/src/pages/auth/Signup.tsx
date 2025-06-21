@@ -25,7 +25,6 @@ export const Signup: React.FC = () => {
 
   const onSubmit = async (data: SignupForm) => {
     try {
-      console.log('data----->', data);
       await signup(data.email, data.password, data.name);
       toast.success('Account created successfully!');
       navigate('/dashboard');

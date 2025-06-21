@@ -241,7 +241,7 @@ export const Roadmap: React.FC = () => {
                         </h4>
                         <div className="space-y-3">
                           {milestone.projects.map((project) => (
-                            <div key={project.id} className="p-4 bg-gray-800/50 rounded-lg">
+                            <div key={project._id} className="p-4 bg-gray-800/50 rounded-lg">
                               <div className="flex items-center justify-between mb-2">
                                 <h5 className="font-medium text-white">{project.title}</h5>
                                 <Badge
@@ -270,7 +270,7 @@ export const Roadmap: React.FC = () => {
                                   <Button
                                     variant="outline"
                                     size="sm"
-                                    onClick={() => handleProjectStatusChange(project.id, project.status)}
+                                    onClick={() => handleProjectStatusChange(project._id, project.status)}
                                   >
                                     {project.status === 'not-started' ? 'Start' :
                                      project.status === 'in-progress' ? 'Complete' :
