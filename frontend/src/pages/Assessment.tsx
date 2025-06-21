@@ -136,7 +136,7 @@ export const Assessment: React.FC = () => {
 
   const loadAssessments = async () => {
     try {
-      const response = await assessmentAPI.getAll('Frontend');
+      const response = await assessmentAPI.getAll(selectedGoal?.id);
       setAvailableAssessments(response.data.assessments);
       if (response.data.assessments.length > 0) {
         setSelectedAssessment(response.data.assessments[0]);
