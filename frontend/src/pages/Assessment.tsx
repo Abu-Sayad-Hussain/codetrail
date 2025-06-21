@@ -83,25 +83,25 @@ const experienceLevels = [
     id: 'absolute-beginner',
     title: 'Absolute Beginner',
     description: 'New to programming, ready to start learning',
-    duration: '12-18 months'
+    duration: '1-3 months'
   },
   {
     id: 'some-experience',
     title: 'Some Experience',
     description: 'Basic programming knowledge, learning new technologies',
-    duration: '6-12 months'
+    duration: '3-12 months'
   },
   {
     id: 'intermediate',
     title: 'Intermediate',
     description: 'Comfortable with programming, seeking specialization',
-    duration: '3-6 months'
+    duration: '1-3 years'
   },
   {
     id: 'advanced',
     title: 'Advanced',
     description: 'Experienced developer looking to level up',
-    duration: '1-3 months'
+    duration: '3+ years'
   }
 ];
 
