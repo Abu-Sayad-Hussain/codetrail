@@ -46,7 +46,7 @@ export interface Question {
 }
 
 export interface RoadmapMilestone {
-  id: string;
+  _id: string;
   title: string;
   description: string;
   skills: string[];
@@ -58,7 +58,7 @@ export interface RoadmapMilestone {
 }
 
 export interface Roadmap {
-  id: string;
+  _id: string;
   title: string;
   description: string;
   careerGoal: string;

@@ -149,11 +149,11 @@ export const Roadmap: React.FC = () => {
         
         <div className="space-y-4">
           {currentRoadmap.milestones.map((milestone, index) => (
-            <Card key={milestone.i} gradient>
+            <Card key={milestone._id} gradient>
               <div className="p-6">
                 <div 
                   className="flex items-center justify-between cursor-pointer"
-                  onClick={() => handleMilestoneClick(milestone.id)}
+                  onClick={() => handleMilestoneClick(milestone._id)}
                 >
                   <div className="flex items-center space-x-4">
                     <div className="flex items-center space-x-2">
@@ -200,7 +200,7 @@ export const Roadmap: React.FC = () => {
                       size="sm"
                       onClick={(e) => {
                         e.stopPropagation();
-                        handleMilestoneStatusChange(milestone.id, milestone.status);
+                        handleMilestoneStatusChange(milestone._id, milestone.status);
                       }}
                     >
                       {milestone.status === 'not-started' ? 'Start' :
@@ -211,7 +211,7 @@ export const Roadmap: React.FC = () => {
                 </div>
 
                 {/* Expanded Content */}
-                {selectedMilestone === milestone.id && (
+                {selectedMilestone === milestone._id && (
                   <motion.div
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: 'auto' }}

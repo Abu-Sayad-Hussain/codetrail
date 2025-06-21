@@ -46,7 +46,7 @@ export const useRoadmapStore = create<RoadmapState>((set, get) => ({
       
       set((state) => ({
         currentRoadmap: roadmap,
-        roadmaps: [roadmap, ...state.roadmaps.filter(r => r.id !== roadmap.id)],
+        roadmaps: [roadmap, ...state.roadmaps.filter(r => r._id !== roadmap.id)],
         isLoading: false
       }));
 
@@ -88,7 +88,7 @@ export const useRoadmapStore = create<RoadmapState>((set, get) => ({
     if (!currentRoadmap) return;
 
     try {
-      const response = await roadmapAPI.updateMilestone(currentRoadmap.id, milestoneId, status);
+      const response = await roadmapAPI.updateMilestone(currentRoadmap._id, milestoneId, status);
       const updatedRoadmap = response.data.roadmap;
       
       set({ currentRoadmap: updatedRoadmap });
@@ -108,7 +108,7 @@ export const useRoadmapStore = create<RoadmapState>((set, get) => ({
     if (!currentRoadmap) return;
 
     try {
-      const response = await roadmapAPI.updateProject(currentRoadmap.id, projectId, status);
+      const response = await roadmapAPI.updateProject(currentRoadmap._id, projectId, status);
       const updatedRoadmap = response.data.roadmap;
       
       set({ currentRoadmap: updatedRoadmap });
