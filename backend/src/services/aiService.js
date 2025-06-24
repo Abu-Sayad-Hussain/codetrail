@@ -1,11 +1,26 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-import OpenAI from 'openai';
-console.log('openai key----->', process.env.OPENAI_API_KEY)
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
-});
+import { GoogleGenAI } from "@google/genai";
+
+const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_GENAI_API_KEY });
+
+export const callGemini = async (prompt) => {
+  try {
+    const result = await ai.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: prompt,
+    });
+
+    const raw = result.text;
+    return raw;
+  } catch (err) {
+    console.error("Google Gemini Error:", err);
+    throw err;
+  }
+};
+
+
 
 export const generateRoadmapWithAI = async ({ careerGoal, techStack, skillLevel, assessmentScore }) => {
   try {
@@ -13,19 +28,23 @@ export const generateRoadmapWithAI = async ({ careerGoal, techStack, skillLevel,
 Generate a comprehensive learning roadmap for a ${skillLevel} developer who wants to become a ${careerGoal} developer.
 
 Tech Stack: ${techStack.join(', ')}
-Assessment Score: ${assessmentScore || 'Not provided'}
+Assessment Score: ${assessmentScore ?? 'Not provided'}
 
 Please provide a structured roadmap with:
 1. A compelling title and description
-2. 4-6 learning milestones in logical order
+2. 4–6 learning milestones in logical order
 3. For each milestone:
    - Clear title and description
-   - 3-5 specific skills to learn
-   - 1-2 hands-on projects with descriptions
+   - 3–5 specific skills to learn
+   - 1–2 hands-on projects with descriptions
    - Estimated time to complete
    - Appropriate difficulty level
 
-Format the response as a JSON object with this structure:
+✅ Respond only with valid strict JSON.
+✅ All keys must be double-quoted.
+✅ Do not include markdown, text, or explanation—only the JSON object.
+
+Format example:
 {
   "title": "Learning Path Title",
   "description": "Brief description of the roadmap",
@@ -54,28 +73,15 @@ Format the response as a JSON object with this structure:
 Make it practical, engaging, and tailored to the ${skillLevel} level.
 `;
 
-    const completion = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
-      messages: [
-        {
-          role: "system",
-          content: "You are an expert software development mentor who creates personalized learning roadmaps. Always respond with valid JSON only."
-        },
-        {
-          role: "user",
-          content: prompt
-        }
-      ],
-      temperature: 0.7,
-      max_tokens: 2000
-    });
+    const raw = await callGemini(prompt);
 
-    const response = completion.choices[0].message.content;
-    return JSON.parse(response);
+    const jsonStart = raw.indexOf('{');
+    const jsonEnd = raw.lastIndexOf('}');
+    const jsonString = raw.slice(jsonStart, jsonEnd + 1);
+
+    return JSON.parse(jsonString);
   } catch (error) {
     console.error('AI roadmap generation error:', error);
-    
-    // Fallback to template-based roadmap
     return generateFallbackRoadmap(careerGoal, techStack, skillLevel);
   }
 };
@@ -95,25 +101,12 @@ User context:
 - Current learning focus: ${context?.currentRoadmap || 'General development'}
 
 Be encouraging, practical, and provide actionable advice. Keep responses concise but helpful.
+
+User: ${message}
 `;
 
-    const completion = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
-      messages: [
-        {
-          role: "system",
-          content: systemPrompt
-        },
-        {
-          role: "user",
-          content: message
-        }
-      ],
-      temperature: 0.7,
-      max_tokens: 500
-    });
-
-    return completion.choices[0].message.content;
+    const response = await callGemini(systemPrompt);
+    return response.trim();
   } catch (error) {
     console.error('AI chat error:', error);
     return "I'm sorry, I'm having trouble processing your request right now. Please try again later.";
@@ -130,38 +123,26 @@ Interests: ${interests?.join(', ') || 'General development'}
 
 For each project, provide:
 - Title
-- Description (2-3 sentences)
-- Key features (3-4 bullet points)
+- Description (2–3 sentences)
+- Key features (3–4 bullet points)
 - Tech stack recommendations
 - Difficulty level
 - Estimated time to complete
 
-Format as JSON array of project objects.
+✅ Respond only with a valid JSON array of project objects.
 `;
 
-    const completion = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
-      messages: [
-        {
-          role: "system",
-          content: "You are a project mentor who suggests practical coding projects. Always respond with valid JSON only."
-        },
-        {
-          role: "user",
-          content: prompt
-        }
-      ],
-      temperature: 0.8,
-      max_tokens: 1000
-    });
+    const raw = await callGemini(prompt);
+    const jsonStart = raw.indexOf('[');
+    const response = raw.slice(jsonStart).trim();
 
-    const response = completion.choices[0].message.content;
     return JSON.parse(response);
   } catch (error) {
     console.error('AI project suggestions error:', error);
     return generateFallbackProjects(skillLevel, techStack);
   }
 };
+
 
 // Fallback functions for when AI is unavailable
 const generateFallbackRoadmap = (careerGoal, techStack, skillLevel) => {

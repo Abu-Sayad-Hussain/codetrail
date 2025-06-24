@@ -39,5 +39,9 @@
     "mongodb"
   ],
   "author": "CodeTrail Team",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "@google/genai": "^1.6.0",
+    "node-fetch": "^3.3.2"
+  }
 }
